@@ -58,6 +58,12 @@ async def help(message: Message):
 ###################################################################
 
 
+
+
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+
 @router.message(Command('start'))
 async def reg_user(message: Message):
     if await validation(message.from_user.id, 'id') is None:
@@ -144,6 +150,7 @@ async def weather_forecast(message: Message, state: FSMContext):
                             "Приходите завтра 😊"
                             ))
 
+
 @router.message(Command('change_city'))
 async def change_city(message:Message, state:FSMContext):
     current_city = await validation(message.from_user.id, 'cityandcoords')
@@ -158,11 +165,6 @@ async def change_city(message:Message, state:FSMContext):
                         '🚀 Введите новый город, и я телепортируюсь туда прогнозом погоды!', reply_markup=stop_operation)
         await state.set_state(Register.city)
 
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
 
 @router.message(F.text.in_(['🌦 Погода', '☀️Погода на 5 дней',
                             '💱 Курс валют', '🏠 Главное меню', '🛑Прервать операцию']))
@@ -177,6 +179,17 @@ async def back_to_mwc(message:Message, state:FSMContext):
         await state.clear()
         await message.answer("❌ Операция прервана", reply_markup=None)
         await reg_user(message)
+
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+
+
+
+
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 
 @router.callback_query(F.data.startswith('set_city'))
 async def location(callback:CallbackQuery, state:FSMContext):
@@ -194,8 +207,8 @@ async def location(callback:CallbackQuery, state:FSMContext):
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+
+
 
 
 class Register(StatesGroup):
@@ -220,6 +233,13 @@ async def reg(message: Message, state:FSMContext):
         await message.answer('No such city')
     finally:
         await state.clear()
+
+
+
+
+# WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 
 async def get_weather(city):
     url = 'https://api.openweathermap.org/data/2.5/weather'
@@ -354,3 +374,7 @@ async def get_weatherweek_forecast(url, city):
             dictio['location'] = [data['city']['name'], data['city']['country']]
             
             return dictio
+
+# WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼

@@ -21,6 +21,10 @@ translate = {
 }
 
 
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+
 @router1.message(Command('currency'))
 async def currency(message: Message):
     count = await validation(message.from_user.id, 'currency_count')
@@ -57,6 +61,17 @@ async def change_currency(message: Message):
         await message.answer(f"🌟 Ваша валюта на данный момент: {translate[str(current_currency)]}/{current_currency}\n", reply_markup=stop_operation)
         await message.answer(f'💱 Выберите валюту ниже: ', reply_markup=currency_keyboard)
 
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+
+
+
+
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+
 @router1.callback_query(F.data.startswith('cur'))
 async def reg_currency(callback: CallbackQuery):
     try:
@@ -67,6 +82,17 @@ async def reg_currency(callback: CallbackQuery):
                                       reply_markup=keyboard_of_abil)
     except:
         await callback.answer('Error')
+
+#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+
+
+
+
+# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 
 async def fetch_currency(session, valcode):
     url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
@@ -95,3 +121,7 @@ async def currency_answer_creating(currencies, user_curr):
                 f'1 {item[0]['cc']} = {calc} {user_curr} 💰'
             )
     return text
+
+# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
