@@ -1,7 +1,7 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from app.database import weather_forallusers_to0_db
+from app.database import reset_weather_currency_at_midnight_db
 
-async def weather_forallusers_to0():
+async def reset_weather_currency_at_midnight():
     sheduler = AsyncIOScheduler()
-    sheduler.add_job(weather_forallusers_to0_db, 'cron', hour=0, minute=0)
+    sheduler.add_job(reset_weather_currency_at_midnight_db, 'cron', hour=0, minute=0)
     sheduler.start()

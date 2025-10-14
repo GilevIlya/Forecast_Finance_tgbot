@@ -35,7 +35,9 @@ async def save_currency(id, cur):
         update = 'UPDATE clients SET currency = $1 WHERE id = $2'
         await conn.execute(update, cur, id)
 
-async def weather_forallusers_to0_db():
+async def reset_weather_currency_at_midnight_db():
     async with pool.acquire() as conn:
-        tozero = 'UPDATE clients SET weather_daily_count = 0, weatherweek_daily_count = 0'
+        tozero = """UPDATE clients SET 
+        weather_daily_count = 0, weatherweek_daily_count = 0,
+        currency_count = 0"""
         await conn.execute(tozero)
