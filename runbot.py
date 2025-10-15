@@ -29,10 +29,20 @@ async def webhook_handler(request):
 async def on_startup(app):
     await create_pool()
     await reset_weather_currency_at_midnight()
-    await bot.set_webhook(
-        url=f"{WEBHOOK_URL}",
-        drop_pending_updates=True
-    )
+    await asyncio.sleep(5)
+    WEBHOOK_URL = os.getenv('WEBHOOK_URL')
+    if not WEBHOOK_URL:
+        print("⚠️ WEBHOOK_URL не установлен! Добавьте переменную окружения.")
+        return
+    try:
+        await bot.set_webhook(
+            url=f"{WEBHOOK_URL}/webhook",
+            drop_pending_updates=True
+        )
+        print(f"✅ Webhook установлен: {WEBHOOK_URL}/webhook")
+    except Exception as e:
+        print(f"❌ Не удалось установить webhook: {e}")
+        print(f"   Проверьте что домен доступен: {WEBHOOK_URL}")
     
 
 async def on_shutdown(app):
