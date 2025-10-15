@@ -45,7 +45,7 @@ async def main():
     app.router.add_post('/webhook', webhook_handler)
     app.on_startup.append(on_startup)
     app.on_shutdown.append(on_shutdown)
-    PORT = int(os.getenv('PORT'))
+    PORT = int(os.getenv('PORT', 8080))
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', PORT)
