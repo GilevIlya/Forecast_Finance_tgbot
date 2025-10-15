@@ -13,6 +13,10 @@ import aiohttp
 import json
 import os
 
+find_path = find_dotenv()
+load_dotenv(find_path)
+
+
 API_KEY = os.getenv('API_KEY')
 ADMIN_ID = os.getenv('ADMIN_ID')
 ADMIN_USER_NAME = os.getenv('ADMIN_USER_NAME')
