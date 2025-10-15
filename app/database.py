@@ -1,6 +1,18 @@
+from dotenv import load_dotenv, find_dotenv
+
+import os
 import asyncpg
 import json
-from config import CONNECTION
+
+find_path = find_dotenv()
+load_dotenv(find_path)
+
+CONNECTION = {
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "host": os.getenv("DB_HOST")
+}
 
 async def create_pool():
     global pool

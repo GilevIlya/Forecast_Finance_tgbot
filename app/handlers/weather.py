@@ -6,11 +6,17 @@ from aiogram.fsm.context import FSMContext
 from app.keyboards import build_city_keyboard, keyboard_of_abil, stop_operation
 from app.database import save_city_and_coords, validation, registration, daily_count 
 from app.handlers.currency import currency
-from config import API_KEY, ADMIN_ID, ADMIN_USER_NAME, TOKEN
+from dotenv import find_dotenv, load_dotenv
 from datetime import datetime
 
 import aiohttp
 import json
+import os
+
+API_KEY = os.getenv('API_KEY')
+ADMIN_ID = os.getenv('ADMIN_ID')
+ADMIN_USER_NAME = os.getenv('ADMIN_USER_NAME')
+TOKEN = os.getenv('TOKEN')
 
 bot = Bot(token=TOKEN)
 router = Router()
@@ -83,7 +89,7 @@ async def reg_user(message: Message):
                             "\n"
                             "📌 Доступные команды:\n"
                             "/weather – узнать погоду в твоём городе\n"
-                            '/weatherweek - узнать погоду на 5 дней в твоём городе\n'
+                            '/weathe_rweek - узнать погоду на 5 дней в твоём городе\n'
                             "/currency – курсы валют (USD, EUR, PLN)\n"
                             "/help – помощь и описание функций")
     else:
@@ -94,7 +100,7 @@ async def reg_user(message: Message):
                             '\n'
                             "📌 Доступные команды:\n"
                             "/weather – узнать погоду в твоём городе\n"
-                            '/weatherweek - узнать погоду на 5 дней в твоём городе\n'
+                            '/weather_week - узнать погоду на 5 дней в твоём городе\n'
                             "/change_city - изменить город для прогноза погоды\n"  
                             "/currency – курсы валют (USD, EUR, PLN)\n"
                             "/change_currency - изменить основную валюту\n"  
