@@ -8,5 +8,5 @@ bot = Bot(token=TOKEN)
 
 async def reset_weather_currency_at_midnight():
     scheduler = AsyncIOScheduler(timezone=timezone("Europe/Kyiv"))
-    scheduler.add_job(reset_weather_currency_at_midnight_db, 'cron', hour=14, minute=20)
+    scheduler.add_job(reset_weather_currency_at_midnight_db, 'cron', hour=0, minute=0)
     scheduler.start()
