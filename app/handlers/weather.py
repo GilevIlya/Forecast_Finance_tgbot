@@ -228,7 +228,7 @@ class Register(StatesGroup):
 async def reg(message: Message, state:FSMContext):
     city = message.text
     if city[0] == '/':
-        await message.answer('Enter the city name, not command/Введите название города, не команду')
+        await message.answer('Enter the city name, not command\nВведите название города, не команду')
         return
     if len(city) > 50:
         await message.answer('Слишком длинно')

@@ -28,7 +28,6 @@ async def webhook_handler(request):
     return web.Response(text="OK")
 
 async def health_check(request):
-    await bot.send_message(ADMIN_ID, 'awake, uptimerobot')
     return web.Response(text="Bot is running!")
 
 async def on_startup(app):
