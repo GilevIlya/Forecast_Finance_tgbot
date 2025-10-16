@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, Router
 from aiogram.types import Update
 from aiohttp import web
 from app.database import close_pool, create_pool
-from app.handlers.sheduler import reset_weather_currency_at_midnight
+from app.handlers.scheduler import reset_weather_currency_at_midnight
 from app.handlers.weather import router
 from app.handlers.currency import router1
 
