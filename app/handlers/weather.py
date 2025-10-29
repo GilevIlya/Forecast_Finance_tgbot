@@ -238,14 +238,14 @@ async def reg(message: Message, state:FSMContext):
         return
     try:
         cities = await find_city(city)
+        keyboard = await build_city_keyboard(cities)
+        await message.answer('🌍Выберите город из возможных: ', reply_markup=keyboard)
+        await state.clear()
+    except Exception as e:
         if cities is None:
             await state.clear()
             await state.set_state(Register.city)
             await message.answer('📍 Город не найден, попробуйте ещё раз.')
-        keyboard = await build_city_keyboard(cities)
-        await message.answer('🌍Выберите город из возможных: ', reply_markup=keyboard)
-    finally:
-        await state.clear()
 
 
 
