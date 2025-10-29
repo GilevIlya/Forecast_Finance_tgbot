@@ -1,6 +1,6 @@
 from aiogram import Router, F, Bot
 from aiogram.filters import  Command
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from app.keyboards import build_city_keyboard, keyboard_of_abil, stop_operation
@@ -30,6 +30,7 @@ router = Router()
 @router.message(Command('help'))
 async def help(message: Message):
     await message.answer(
+        "Upd"
         "🤖 <b>Привет!</b> Я бот <b>Forecast&Finance</b> 🌦💸\n"
         "Помогаю узнавать <b>погоду</b> и <b>курсы валют</b>.\n\n"
 
@@ -187,7 +188,7 @@ async def back_to_mwc(message:Message, state:FSMContext):
         await reg_user(message)    
     elif message.text == '🛑Прервать операцию':
         await state.clear()
-        await message.answer("❌ Операция прервана", reply_markup=None)
+        await message.answer("❌ Операция прервана", reply_markup=ReplyKeyboardRemove())
         await reg_user(message)
 
 #COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
@@ -228,7 +229,7 @@ class Register(StatesGroup):
 async def reg(message: Message, state:FSMContext):
     city = message.text
     if city[0] == '/':
-        await message.answer('Enter the city name, not command\nВведите название города, не команду')
+        await message.answer('Введите название города, не команду')
         return
     if len(city) > 50:
         await message.answer('Слишком длинно')
@@ -237,10 +238,12 @@ async def reg(message: Message, state:FSMContext):
         return
     try:
         cities = await find_city(city)
+        if cities is None:
+            await state.clear()
+            await state.set_state(Register.city)
+            await message.answer('📍 Город не найден, попробуйте ещё раз.')
         keyboard = await build_city_keyboard(cities)
         await message.answer('🌍Выберите город из возможных: ', reply_markup=keyboard)
-    except Exception:
-        await message.answer('No such city')
     finally:
         await state.clear()
 
@@ -268,7 +271,7 @@ async def get_weather(city):
         )
     except Exception as ex:
         print(ex)
-        return 'Error, No such key'
+        return 'Ошибка'
 
 
 async def get_weatherweek(city):
