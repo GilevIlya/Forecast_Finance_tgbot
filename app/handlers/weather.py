@@ -238,6 +238,7 @@ async def reg(message: Message, state:FSMContext):
         return
     try:
         cities = await find_city(city)
+        await message.answer(cities)
         keyboard = await build_city_keyboard(cities)
         await message.answer('🌍Выберите город из возможных: ', reply_markup=keyboard)
         await state.clear()
