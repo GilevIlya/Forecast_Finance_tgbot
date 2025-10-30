@@ -3,6 +3,7 @@ from aiogram.filters import  Command
 from aiogram.types import Message, CallbackQuery
 from app.keyboards import currency_keyboard, keyboard_of_abil, stop_operation
 from app.database import validation, save_currency, daily_count, get_curr_from_db
+from datetime import date
 
 import aiohttp
 import asyncio
@@ -59,7 +60,8 @@ async def create_currency_answer(user_curr, count):
     for currency, value in currency_for_user[base_currency].items():
         message_lines.append(f"• {currency}/{translate[currency]}: {value:.4f}")
     message_lines.append("------------------------------------")
-    message_lines.append("🛈 Данные актуальны на момент запроса.")
+    today = date.today()
+    message_lines.append(f"🛈 Данные актуальны на {today}.")
     return "\n".join(message_lines)
 
 
