@@ -25,7 +25,7 @@ translate = {
 # COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 # COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
 
-@router1.message(Command('currency'))
+@router1.message(F.text.in_(['/currency', '💱 Курс валют']))
 async def currency(message: Message):
     count = await validation(message.from_user.id, 'currency_count')
     count = 0 if count is None else count
