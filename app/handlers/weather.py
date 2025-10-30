@@ -229,8 +229,7 @@ class Register(StatesGroup):
 async def reg(message: Message, state:FSMContext):
     city = message.text
     if city[0] == '/':
-        await message.answer('Введите название города, не команду')
-        return
+        await state.clear()
     if len(city) > 50:
         await message.answer('Слишком длинно')
         await message.answer('🌍Укажи свой существующий город,\n'
@@ -238,16 +237,15 @@ async def reg(message: Message, state:FSMContext):
         return
     try:
         cities = await find_city(city)
-        await message.answer(cities)
+        if not cities:
+            await message.answer("📍 Город не найден, попробуйте ещё раз.")
+            return
         keyboard = await build_city_keyboard(cities)
         await message.answer('🌍Выберите город из возможных: ', reply_markup=keyboard)
         await state.clear()
-    except Exception as e:
-        if cities is None:
-            await state.clear()
-            await state.set_state(Register.city)
-            await message.answer('📍 Город не найден, попробуйте ещё раз.')
-
+    except Exception:
+        await message.answer('Unsuspected Error, вызовите /change_city снова.')
+        await state.clear()
 
 
 

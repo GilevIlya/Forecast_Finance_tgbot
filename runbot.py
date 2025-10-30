@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, Router
 from aiogram.types import Update
 from aiohttp import web
 from app.database import close_pool, create_pool
-from app.handlers.scheduler import reset_weather_currency_at_midnight
+from app.handlers.scheduler import reset_weather_currency_at_midnight, update_currency
 from app.handlers.weather import router
 from app.handlers.currency import router1
 
@@ -33,6 +33,7 @@ async def health_check(request):
 async def on_startup(app):
     await create_pool()
     await reset_weather_currency_at_midnight()
+    await update_currency()
     WEBHOOK_URL = os.getenv('WEBHOOK_URL')
     if not WEBHOOK_URL:
         print("WEBHOOK_URL не установлен! Добавьте переменную окружения.")

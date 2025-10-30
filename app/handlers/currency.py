@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.filters import  Command
 from aiogram.types import Message, CallbackQuery
 from app.keyboards import currency_keyboard, keyboard_of_abil, stop_operation
-from app.database import validation, save_currency, daily_count
+from app.database import validation, save_currency, daily_count, get_curr_from_db
 
 import aiohttp
 import asyncio
@@ -28,8 +28,7 @@ translate = {
 @router1.message(Command('currency'))
 async def currency(message: Message):
     count = await validation(message.from_user.id, 'currency_count')
-    if count is None:
-        count = 0
+    count = 0 if count is None else count
     if count >= 10:
         await message.answer("Упс 😅, вы уже использовали все свои запросы на сегодня. \n"
                             "Приходите завтра, чтобы проверить курсы валют снова!")
@@ -39,18 +38,30 @@ async def currency(message: Message):
         await message.answer(f'Вы ещё не указали валюту, для которой хотите узнать курc😅', reply_markup=stop_operation)
         await message.answer('💱Выберете одну из валют ниже:', reply_markup=currency_keyboard)
     else:
-        result = await currency_get_inf(user_curr)
-        for item in range(len(result)):
-            result[item][0]['txt'] = translate[result[item][0]['cc']]
-        answer_to_bot = await currency_answer_creating(result, user_curr)
-        await message.answer("\n".join(answer_to_bot))
-        await daily_count(message.from_user.id, 'currency_count')
-        attempts = 9-count
+        message_ans = await create_currency_answer(user_curr, count)
+        await message.answer(message_ans)
+        attempts = 9 - count
         if attempts == 0:
             await message.answer(f"💱 Осталось {attempts} запросов на курсы валют сегодня.\n"
-                                "Приходите завтра 😊")
+                                    "Приходите завтра 😊")
         else:
             await message.answer(f"💱 Осталось {attempts} запросов на курсы валют сегодня.")
+        await daily_count(message.from_user.id, 'currency_count')
+
+async def create_currency_answer(user_curr, count):
+    currency_for_user = await get_curr_from_db(user_curr)
+    count = await validation(count, 'currency_count')
+    base_currency = list(currency_for_user.keys())[0]
+    message_lines = [
+        f"💱 Курсы валют относительно {base_currency}:",
+        "------------------------------------"
+    ]
+    for currency, value in currency_for_user[base_currency].items():
+        message_lines.append(f"• {currency}/{translate[currency]}: {value:.4f}")
+    message_lines.append("------------------------------------")
+    message_lines.append("🛈 Данные актуальны на момент запроса.")
+    return "\n".join(message_lines)
+
 
 @router1.message(Command('change_currency'))
 async def change_currency(message: Message):
@@ -86,42 +97,3 @@ async def reg_currency(callback: CallbackQuery):
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
 #CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-
-
-
-
-# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# CURRENCY_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-
-async def fetch_currency(session, valcode):
-    url = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json"
-    params = {"valcode":valcode}
-    async with session.get(url, params=params) as response:
-        return await response.json()
-
-
-async def currency_get_inf(user_curr):
-    list_of_currency = ['USD', 'EUR', 'CZK', 'PLN', 'MDL', 'AZN', 'RON']
-    async with aiohttp.ClientSession() as session:
-        tasks = [fetch_currency(session, item) for item in list_of_currency]
-        results = await asyncio.gather(*tasks)
-        results.append([{'r030': 0, 'txt': '', 'rate': 1, 'cc': 'UAH'}])
-        return results
-    
-async def currency_answer_creating(currencies, user_curr):
-    found = next((lst for lst in currencies if lst[0].get('cc') == user_curr), None)
-    text = [f'Ваша валюта💵: {found[0]['txt']}/{found[0]['cc']}',
-            f'💱 Курсы валют на сегодня:']
-    
-    for item in currencies:
-        if item[0]['cc'] != str(user_curr):
-            calc = round(item[0]['rate']/found[0]['rate'], 4)
-            text.append(
-                f'1 {item[0]['cc']} = {calc} {user_curr} 💰'
-            )
-    return text
-
-# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-# CURRENCY_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼

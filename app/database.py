@@ -3,6 +3,8 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import asyncpg
 import json
+import aiohttp
+import asyncio
 
 find_path = find_dotenv()
 load_dotenv(find_path)
@@ -53,3 +55,14 @@ async def reset_weather_currency_at_midnight_db():
         weather_daily_count = 0, weatherweek_daily_count = 0,
         currency_count = 0"""
         await conn.execute(tozero)
+
+async def update_db_currency_data(final_data):
+    async with pool.acquire() as conn:
+        values = [(base, json.dumps(targets)) for base, targets in final_data.items()]
+        await conn.executemany("UPDATE currency_table SET currency = $2 WHERE currency_name = $1", values)
+
+async def get_curr_from_db(user_curr):
+    async with pool.acquire() as conn:
+        result = await conn.fetch("SELECT * FROM currency_table WHERE currency_name = $1", user_curr)
+        parsed_data = {record['currency_name']: json.loads(record['currency']) for record in result}
+        return parsed_data
