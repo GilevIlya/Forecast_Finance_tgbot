@@ -15,7 +15,7 @@ translate = {
     'CZK': '🇨🇿 Чешская крона',
     'PLN': '🇵🇱 Польский злотый',
     'MDL': '🇲🇩 Молдавский лей',
-    'AZN': '🇦🇿 Азербайджанский манат',
+    'AZN': '🇦🇿 Азербайдж. манат',
     'RON': '🇷🇴 Румынский лей',
     'UAH': '🇺🇦 Украинская гривна'
 }
@@ -53,7 +53,7 @@ async def create_currency_answer(user_curr, count):
     count = await validation(count, 'currency_count')
     base_currency = list(currency_for_user.keys())[0]
     message_lines = [
-        f"💱 Курсы валют относительно {base_currency}:",
+        f"💱 Курсы валют относительно {base_currency}/{translate[base_currency]}:",
         "------------------------------------"
     ]
     for currency, value in currency_for_user[base_currency].items():
