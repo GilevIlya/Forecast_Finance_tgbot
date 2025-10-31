@@ -25,8 +25,10 @@ TOKEN = os.getenv('TOKEN')
 bot = Bot(token=TOKEN)
 router = Router()
 
-###################################################################
+# ========================
 # INDEPENDENT COMMAND "/help"
+# ========================
+
 @router.message(Command('help'))
 async def help(message: Message):
     await message.answer(
@@ -64,15 +66,15 @@ async def help(message: Message):
         , parse_mode="HTML"
     )
 
+# ========================
 # INDEPENDENT COMMAND "/help"
-###################################################################
+# ========================
 
 
 
-
+# ========================
 # COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# COMMANDS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# ========================
 
 @router.message(Command('start'))
 async def reg_user(message: Message):
@@ -140,16 +142,15 @@ async def back_to_mwc(message:Message, state:FSMContext):
         await message.answer("❌ Операция прервана", reply_markup=ReplyKeyboardRemove())
         await reg_user(message)
 
+# ========================
 #COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#COMMANDS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# ========================
 
 
 
+# ========================
 # WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# WEATHER_FUNCTIONS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-
+# ========================
 
 async def get_weather(city):
     url = 'https://api.openweathermap.org/data/2.5/weather'
@@ -282,15 +283,15 @@ async def get_weatherweek_forecast(url, city):
 
             return dictio
 
+# ========================
 # WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-# WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-# WEATHER_FUNCTIONS 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# ========================
 
 
 
-# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# CALLBACKS 🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# ========================
+# CALLBACK🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
+# ========================
 
 @router.callback_query(F.data.startswith('set_city'))
 async def location(callback:CallbackQuery, state:FSMContext):
@@ -305,10 +306,9 @@ async def location(callback:CallbackQuery, state:FSMContext):
     finally:
         await state.clear()
 
-#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-#CALLBACKS🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-
+# ========================
+#CALLBACK🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
+# ========================
 
 
 class WeatherHandler:

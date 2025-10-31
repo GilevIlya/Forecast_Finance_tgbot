@@ -3,8 +3,6 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import asyncpg
 import json
-import aiohttp
-import asyncio
 
 find_path = find_dotenv()
 load_dotenv(find_path)
