@@ -84,7 +84,7 @@ class CurrencyHandler:
             return await self.ask_for_currency()
         await self.message.answer('⏳ Подождите...')
         await self.create_currency_answer(self.user_curr)
-        await self.counter_message()
+        await self.count_message()
         await self.update_counter()
 
     async def __is_limit_reached(self):
@@ -107,7 +107,7 @@ class CurrencyHandler:
             message_lines.append(f"• {currency}/{translate[currency]}: {value:.4f}")
         message_lines.append("------------------------------------")
         today = date.today()
-        message_lines.append(f"🛈 Данные актуальны на {today}.")
+        message_lines.append(f"Upd 🛈 Данные актуальны на {today}.")
         await self.message.answer("\n".join(message_lines))
 
     async def count_message(self):
