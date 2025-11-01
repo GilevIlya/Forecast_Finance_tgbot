@@ -368,8 +368,8 @@ class WeatherHandler:
 
     async def _counter_message(self):
         attempts_left = (self.config['limit']-1) - self.user_attempts
-        await self.message.answer(f'☁️ Осталось всего {attempts_left} запрос(ов) узнать {self.config['desc']} сегодня!\n'
-                                  "Используйте их с умом 😊" if attempts_left != 0 else (
+        await self.message.answer(f'☁️ Осталось всего {attempts_left} запрос(ов) узнать {self.config['desc']} сегодня!'
+                                  if attempts_left != 0 else (
                                   f'☁️ Осталось всего {attempts_left} запрос(ов) узнать {self.config['desc']} сегодня!\n'
                                   "Приходите завтра 😊"))
     async def _udpate_counter(self):

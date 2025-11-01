@@ -110,11 +110,11 @@ class CurrencyHandler:
         message_lines.append(f"🛈 Данные актуальны на {today}.")
         await self.message.answer("\n".join(message_lines))
 
-    async def counter_message(self):
+    async def count_message(self):
         attempts_left = ((self.curr_calls_limit - 1) - self.user_attempts)
         await self.message.answer(f"💱 Осталось {attempts_left} запросов на курсы валют сегодня.\n"
-                                  "Приходите завтра 😊") if attempts_left == 0 else (
-            f"💱 Осталось {attempts_left} запросов на курсы валют сегодня.")
+                                  "Приходите завтра 😊" if attempts_left == 0 else
+                                  (f"💱 Осталось {attempts_left} запросов на курсы валют сегодня."))
 
     async def update_counter(self):
         await daily_count(self.user_id, 'currency_count')
