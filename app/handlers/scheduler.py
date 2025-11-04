@@ -1,11 +1,14 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app.database import reset_weather_currency_at_midnight_db, update_db_currency_data
-from app.handlers.weather import TOKEN, ADMIN_ID
 from aiogram import Bot
 from pytz import timezone
 
 import aiohttp
 import asyncio
+import os
+
+ADMIN_ID = os.getenv('ADMIN_ID')
+TOKEN = os.getenv('TOKEN')
 
 bot = Bot(token=TOKEN)
 
