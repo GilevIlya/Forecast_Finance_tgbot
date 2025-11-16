@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router
 from aiogram.types import Update
 from aiohttp import web
+from app.middlewares.general_middlewares import MessageLimitMiddleware
 from app.database import close_pool, create_pool
 from app.handlers.scheduler import reset_weather_currency_at_midnight, update_currency
 from app.handlers.weather import router
@@ -12,12 +13,12 @@ import os
 
 routermain = Router()
 routermain.include_routers(router, router1)
+routermain.message.middleware(MessageLimitMiddleware())
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 ADMIN_ID = os.getenv('ADMIN_ID')
-
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 

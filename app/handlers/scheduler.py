@@ -74,9 +74,12 @@ class CurrencyUpdate:
             return final_data
 
 async def run_update():
+    print('Here')
     cur = CurrencyUpdate()
     final_data = await cur.currency_get_inf()
+    print(final_data)
     await update_db_currency_data(final_data)
+    print('Already here')
 
 
 # ========================
