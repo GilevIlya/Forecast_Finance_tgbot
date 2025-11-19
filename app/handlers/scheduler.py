@@ -1,11 +1,13 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app.database import reset_weather_currency_at_midnight_db, update_db_currency_data
+from redis_client import rds_client
 from aiogram import Bot
 from pytz import timezone
 
 import aiohttp
 import asyncio
 import os
+import json
 
 ADMIN_ID = os.getenv('ADMIN_ID')
 TOKEN = os.getenv('TOKEN')
@@ -14,12 +16,12 @@ bot = Bot(token=TOKEN)
 
 async def reset_weather_currency_at_midnight():
     scheduler = AsyncIOScheduler(timezone=timezone("Europe/Kyiv"))
-    scheduler.add_job(reset_weather_currency_at_midnight_db, 'cron', hour=0, minute=0)
+    scheduler.add_job(reset_weather_currency_at_midnight_db, 'cron', hour=10, minute=33)
     scheduler.start()
 
 async def update_currency():
     scheduler2 = AsyncIOScheduler(timezone=timezone("Europe/Kyiv"))
-    scheduler2.add_job(run_update,'interval', hours=3)
+    scheduler2.add_job(run_update,'interval', seconds=10800)
     scheduler2.start()
 
 # ========================
@@ -74,12 +76,11 @@ class CurrencyUpdate:
             return final_data
 
 async def run_update():
-    print('Here')
     cur = CurrencyUpdate()
     final_data = await cur.currency_get_inf()
-    print(final_data)
-    await update_db_currency_data(final_data)
-    print('Already here')
+    json_final_data = json.dumps(final_data)
+    rds_client.set('currency_data', json_final_data, ex=10800)
+    await update_db_currency_data(json_final_data)
 
 
 # ========================

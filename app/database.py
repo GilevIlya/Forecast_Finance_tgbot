@@ -1,4 +1,5 @@
 from dotenv import load_dotenv, find_dotenv
+from redis_client import rds_client
 
 import os
 import asyncpg
@@ -54,13 +55,15 @@ async def reset_weather_currency_at_midnight_db():
         currency_count = 0"""
         await conn.execute(tozero)
 
-async def update_db_currency_data(final_data):
+async def update_db_currency_data(json_final_data):
     async with pool.acquire() as conn:
-        values = [(base, json.dumps(targets)) for base, targets in final_data.items()]
-        await conn.executemany("UPDATE currency_table SET currency = $2 WHERE currency_name = $1", values)
+        await conn.execute("UPDATE currency_table SET currency_value = $2 WHERE currency_key = $1", 'currency_data', json_final_data)
 
-async def get_curr_from_db(user_curr):
+async def get_curr_from_db():
     async with pool.acquire() as conn:
-        result = await conn.fetch("SELECT * FROM currency_table WHERE currency_name = $1", user_curr)
-        parsed_data = {record['currency_name']: json.loads(record['currency']) for record in result}
-        return parsed_data
+        result = await conn.fetchval("SELECT * FROM currency_table WHERE currency_key = $1", 'currency_data')
+        return result
+
+async def filling_redis_on_start():
+    get_data = await get_curr_from_db()
+    rds_client.set('currency_data', get_data, ex=10800)

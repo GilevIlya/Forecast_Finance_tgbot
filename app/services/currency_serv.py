@@ -2,7 +2,10 @@ from aiogram.types import Message, CallbackQuery
 from app.keyboards import stop_operation, keyboard_of_abil, currency_keyboard
 from app.services.general_serv import CurrencyAndWeatherHandlerMainClass
 from app.database import validation, get_curr_from_db, save_currency
+from redis_client import rds_client
 from datetime import date
+
+import json
 
 translate = {
     'USD': '🇺🇸 Доллар США',
@@ -38,13 +41,15 @@ class CurrencyHandler(CurrencyAndWeatherHandlerMainClass):
         await message.answer('💱Выберете одну из валют ниже:', reply_markup=currency_keyboard)
 
     async def create_currency_answer(self, user_curr: str, message: Message) -> None:
-        curr_data_for_user = await get_curr_from_db(user_curr)
-        base_currency_name = list(curr_data_for_user.keys())[0]
+        raw_rds_data = rds_client.get("currency_data")
+        curr_data_for_user = json.loads(raw_rds_data) if raw_rds_data else None
+        if curr_data_for_user is None:
+            curr_data_for_user = json.loads(await get_curr_from_db())
         message_lines = [
-            f"💱 Курсы валют относительно {base_currency_name}/{translate[base_currency_name]}:",
+            f"💱 Курсы валют относительно {user_curr}/{translate[user_curr]}:",
             "------------------------------------"
         ]
-        for currency, value in curr_data_for_user[base_currency_name].items():
+        for currency, value in curr_data_for_user[user_curr].items():
             message_lines.append(f"• {currency}/{translate[currency]}: {value:.4f}")
         message_lines.append("------------------------------------")
         today = date.today()
