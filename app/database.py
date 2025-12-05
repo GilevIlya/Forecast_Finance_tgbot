@@ -1,6 +1,5 @@
 from dotenv import load_dotenv, find_dotenv
 from redis_client import rds_client
-
 import os
 import asyncpg
 import json
@@ -9,10 +8,11 @@ find_path = find_dotenv()
 load_dotenv(find_path)
 
 CONNECTION = {
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASSWORD"),
-    "database": os.getenv("DB_NAME"),
-    "host": os.getenv("DB_HOST")
+    "host": "postgres",
+    "user": os.getenv("POSTGRES_USER"),
+    "password": os.getenv("POSTGRES_PASSWORD"),
+    "database": os.getenv("POSTGRES_DB"),
+    "port": 5432
 }
 
 async def create_pool():
@@ -57,7 +57,13 @@ async def reset_weather_currency_at_midnight_db():
 
 async def update_db_currency_data(json_final_data):
     async with pool.acquire() as conn:
-        await conn.execute("UPDATE currency_table SET currency_value = $2 WHERE currency_key = $1", 'currency_data', json_final_data)
+        await conn.execute("""INSERT INTO public.currency_table (id, currency_value, currency_key)
+                            VALUES (1, $1, $2)
+                            ON CONFLICT (id) 
+                            DO UPDATE SET 
+                                currency_value = EXCLUDED.currency_value,
+                                currency_key = EXCLUDED.currency_key;""", json_final_data, 'currency_data')
+        # await conn.execute("UPDATE currency_table SET currency_value = $2 WHERE currency_key = $1", 'currency_data', json_final_data)
 
 async def get_curr_from_db():
     async with pool.acquire() as conn:

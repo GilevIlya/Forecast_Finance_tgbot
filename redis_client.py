@@ -1,7 +1,7 @@
 import redis
 
 rds_client = redis.Redis(
-    host='localhost',
+    host='redis',
     port=6379,
     db=0,
 )

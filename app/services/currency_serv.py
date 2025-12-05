@@ -44,6 +44,7 @@ class CurrencyHandler(CurrencyAndWeatherHandlerMainClass):
         raw_rds_data = rds_client.get("currency_data")
         curr_data_for_user = json.loads(raw_rds_data) if raw_rds_data else None
         if curr_data_for_user is None:
+            print('Not from redis')
             curr_data_for_user = json.loads(await get_curr_from_db())
         message_lines = [
             f"💱 Курсы валют относительно {user_curr}/{translate[user_curr]}:",

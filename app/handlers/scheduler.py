@@ -24,10 +24,6 @@ async def update_currency():
     scheduler2.add_job(run_update,'interval', seconds=10800)
     scheduler2.start()
 
-# ========================
-# UPDATE CURRENCY FOR DB🔽🔽🔽🔽🔽🔽🔽🔽🔽🔽
-# ========================
-
 
 class CurrencyUpdate:
     def __init__(self):
@@ -76,13 +72,11 @@ class CurrencyUpdate:
             return final_data
 
 async def run_update():
-    cur = CurrencyUpdate()
-    final_data = await cur.currency_get_inf()
-    json_final_data = json.dumps(final_data)
-    rds_client.set('currency_data', json_final_data, ex=10800)
-    await update_db_currency_data(json_final_data)
-
-
-# ========================
-# UPDATE CURRENCY FOR DB 🔼🔼🔼🔼🔼🔼🔼🔼🔼🔼
-# ========================
+    try:
+        cur = CurrencyUpdate()              
+        final_data = await cur.currency_get_inf()
+        json_final_data = json.dumps(final_data)
+        await update_db_currency_data(json_final_data)
+        rds_client.set('currency_data', json_final_data, ex=10800)
+    except Exception as e:
+        pass

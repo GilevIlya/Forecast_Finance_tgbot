@@ -3,10 +3,11 @@ from aiogram import Bot, Dispatcher, Router
 from aiogram.types import Update
 from aiohttp import web
 from app.middlewares.general_middlewares import MessageLimitMiddleware
-from app.database import close_pool, create_pool, filling_redis_on_start
-from app.handlers.scheduler import reset_weather_currency_at_midnight, update_currency
+from app.database import close_pool, create_pool
+from app.handlers.scheduler import reset_weather_currency_at_midnight, update_currency, run_update
 from app.handlers.weather import router
 from app.handlers.currency import router1
+from app.services.new_db_tables import create_tables
 
 import asyncio
 import os
@@ -33,6 +34,8 @@ async def health_check(request):
 
 async def on_startup(app):
     await create_pool()
+    create_tables()
+    await run_update()
     await reset_weather_currency_at_midnight()
     await update_currency()
     WEBHOOK_URL = os.getenv('WEBHOOK_URL')
@@ -48,7 +51,6 @@ async def on_startup(app):
     except Exception as e:
         print(f"Не удалось установить webhook: {e}")
         print(f"Проверьте что домен доступен: {WEBHOOK_URL}")
-    await filling_redis_on_start()
 
 async def on_shutdown(app):
     await close_pool()
