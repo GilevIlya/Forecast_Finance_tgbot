@@ -7,6 +7,7 @@ load_dotenv()
 
 db_password = os.getenv("POSTGRES_PASSWORD")
 db_user = os.getenv("POSTGRES_USER")
+db_url = os.getenv('DATABASE_URL')
 
 Base = declarative_base()
 
@@ -18,9 +19,9 @@ class Client(Base):
     username = Column(Text)
     cityandcoords = Column(JSON)
     currency = Column(Text)
-    weather_daily_count = Column(Integer, default=0)
-    weatherweek_daily_count = Column(Integer, default=0)
-    currency_count = Column(Integer, default=0)
+    weather_daily_count = Column(Integer, default=0, server_default="0")
+    weatherweek_daily_count = Column(Integer, default=0, server_default="0")
+    currency_count = Column(Integer, default=0, server_default="0")
 
 class CurrencyTable(Base):
     __tablename__ = 'currency_table'
@@ -28,7 +29,7 @@ class CurrencyTable(Base):
     currency_value = Column(JSON)
     currency_key = Column(Text)
 
-engine = create_engine(f'postgresql://{db_user}:{db_password}@postgres:5432/mydb', echo=True)
+engine = create_engine(db_url)
 
 
 def create_tables():
